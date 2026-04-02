@@ -1,0 +1,27 @@
+#!/bin/sh /etc/rc.common
+
+START=30
+USE_PROCD=1
+
+prog="/usr/bin/blocky"
+config_file="/etc/blocky.yaml"
+
+start_service() {
+	chown blocky:blocky "$config_file"
+	"$prog" validate --config "$config_file" || exit 1
+
+	procd_open_instance
+	procd_set_param command "$prog" --config "$config_file"
+	procd_set_param file "$config_file"
+	procd_set_param respawn
+	procd_set_param stdout 1
+	procd_set_param stderr 1
+	procd_set_param user blocky
+	procd_set_param group blocky
+	procd_add_jail blocky log
+	procd_add_jail_mount "$config_file"
+	procd_add_jail_mount "/etc/ssl"
+	procd_set_param capabilities /etc/capabilities/blocky.json
+	procd_set_param no_new_privs 1
+	procd_close_instance
+}

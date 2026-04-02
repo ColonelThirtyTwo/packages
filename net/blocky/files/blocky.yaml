@@ -1,0 +1,8 @@
+# Configuration documented at https://0xerr0r.github.io/blocky/latest/configuration/
+upstreams:
+  groups:
+    default:
+      - 8.8.8.8
+      - 8.8.4.4
+ports:
+  dns: 53
